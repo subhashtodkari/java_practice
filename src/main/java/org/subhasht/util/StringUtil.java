@@ -3,10 +3,13 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(skipSpecialChars("Pascal's Triangle") + "_" + 118);
+        System.out.println(generateClassName("1027. Longest Arithmetic Subsequence"));
     }
 
-    public static String skipSpecialChars(String str) {
+    public static String generateClassName(String str) {
+        int firstDotIdx = str.indexOf(".");
+        int problemNum = Integer.parseInt(str.substring(0, firstDotIdx));
+        str = str.substring(firstDotIdx+1).trim();
         StringBuilder stringBuilder = new StringBuilder(str.length());
         for(char c : str.toCharArray()) {
             if( (c >= 'a' && c <= 'z')
@@ -14,6 +17,6 @@ public class StringUtil {
                 stringBuilder.append(c);
             }
         }
-        return stringBuilder.toString();
+        return stringBuilder + "_" + problemNum;
     }
 }
