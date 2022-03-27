@@ -23,6 +23,35 @@ public class LongestArithmeticSubsequence_1027 {
         return max+1;
     }
 
+    public int longestArithSeqLength3(int[] nums) {
+        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+        Map<Integer, Integer> lastIdxVsSeqLenMap;
+        int max = 0, diff, lastIdx;
+        for(int i = 0; i < nums.length-1 ; i++) {
+            for(int j = i + 1; j < nums.length; j++) {
+                diff = nums[j] - nums[i];
+                lastIdxVsSeqLenMap = map.get(diff);
+                if(lastIdxVsSeqLenMap == null) {
+                    lastIdxVsSeqLenMap = new HashMap<>();
+                    map.put(diff, lastIdxVsSeqLenMap);
+                }
+                if(lastIdxVsSeqLenMap.get(i) != null) {
+                    //continued sequence
+                    lastIdxVsSeqLenMap.put(j, lastIdxVsSeqLenMap.get(i) + 1);
+                    //lastIdxVsSeqLenMap.remove(i);
+                } else {
+                    //new seq
+                    lastIdxVsSeqLenMap.put(j, 2);
+                }
+                if(lastIdxVsSeqLenMap.get(j) > max) {
+                    max = lastIdxVsSeqLenMap.get(j);
+                }
+            }
+        }
+
+        return max;
+    }
+
     public int longestArithSeqLength2(int[] nums) {
 
         int [][] dp = new int[1000][1002];
