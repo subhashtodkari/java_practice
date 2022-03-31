@@ -3,7 +3,7 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(generateClassName("1010. Pairs of Songs With Total Durations Divisible by 60"));
+        System.out.println(generateClassName("1772. Sort Features by Popularity"));
     }
 
     public static String generateClassName(String str) {
