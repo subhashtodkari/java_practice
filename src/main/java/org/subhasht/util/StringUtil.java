@@ -3,7 +3,7 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(generateClassName("1772. Sort Features by Popularity"));
+        System.out.println(generateClassName("53. Maximum Subarray"));
     }
 
     public static String generateClassName(String str) {
