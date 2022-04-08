@@ -42,6 +42,7 @@ public class LiveStreamCacheSimulator {
         cache.addValue(49, 490);
         cache.addValue(50, 500);
         cache.addValue(52, 520);
+        cache.addValue(52, 5200);
         cache.addValue(54, 540);
         cache.addValue(56, 560);
         cache.addValue(58, 580);
@@ -50,8 +51,8 @@ public class LiveStreamCacheSimulator {
         cache.addValue(60, 600);
         Assertions.assertEquals(5, cache.map.size());
         Assertions.assertEquals(0, cache.getUpToDateValue(51));
-        Assertions.assertEquals(520, cache.getUpToDateValue(52));
-        Assertions.assertEquals(520, cache.getUpToDateValue(53));//should return value for 52
+        Assertions.assertEquals(5200, cache.getUpToDateValue(52));
+        Assertions.assertEquals(5200, cache.getUpToDateValue(53));//should return value for 52
         Assertions.assertEquals(540, cache.getUpToDateValue(54));
         Assertions.assertEquals(540, cache.getUpToDateValue(55));//should return value for 54
         Assertions.assertEquals(560, cache.getUpToDateValue(56));
@@ -80,6 +81,10 @@ class TimeBoundCache<V> implements LiveStream<V> {
 
     @Override
     public void addValue(int time, V v) {
+        map.put(time, v);//O(1)
+        if(end != -1 && array[end] == time) {
+            return;
+        }
         if(end + 1 == array.length) {
             //shift start - end to 0
             if (end - start >= 0) {
@@ -93,7 +98,6 @@ class TimeBoundCache<V> implements LiveStream<V> {
         }
         end++;
         array[end] = time;
-        map.put(time, v);//O(1)
 
         while(array[end] - array[start] >= interval) {//O(outdated entries)
             map.remove(array[start]);//O(1)
