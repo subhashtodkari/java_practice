@@ -72,36 +72,43 @@ class TimeBoundCache<V> implements LiveStream<V> {
 
     public TimeBoundCache(int interval, V defaultVal) {
         this.interval = interval;
-        array = new int[interval * 2];
+        array = new int[interval];
         start = -1;
         end = -1;
         this.defaultVal = defaultVal;
         map = new HashMap<>(interval);
     }
 
+    /**
+     * Time sequence number is always non-descending order, latest value V to be persisted
+     * @param time - integer value of time sequence number
+     * @param v - value object
+     */
     @Override
     public void addValue(int time, V v) {
         map.put(time, v);//O(1)
         if(end != -1 && array[end] == time) {
+            //no need to insert same time again
             return;
-        }
-        if(end + 1 == array.length) {
-            //shift start - end to 0
-            if (end - start >= 0) {
-                System.arraycopy(array, start, array, 0, end - start + 1);//O(active entries)
-            }
-            end = end - start;
-            start = 0;
         }
         if(start == -1) {
             start = 0;
         }
         end++;
+        if(end == array.length) {
+            end = 0;
+        }
+        if(end == start) {
+            map.remove(array[start]);
+            start++;
+        }
         array[end] = time;
-
         while(array[end] - array[start] >= interval) {//O(outdated entries)
             map.remove(array[start]);//O(1)
             start++;
+            if(start == array.length) {
+                start = 0;
+            }
         }
     }
 
@@ -117,6 +124,14 @@ class TimeBoundCache<V> implements LiveStream<V> {
             return defaultVal;
         }
         int left = start, right = end, mid, pos = -1;
+        if(start > end) {//circular wrapped case
+            if(time < array[array.length-1]) {
+                right = array.length - 1;
+            } else {
+                left = 0;
+            }
+        }
+
         //binary search O(log N)
         while(left <= right) {
             if(right - left < 2) {
