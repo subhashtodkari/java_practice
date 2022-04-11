@@ -7,6 +7,7 @@ import java.util.*;
 public class IslandPerimeter {
 
     public static void main(String[] args) {
+        IslandPerimeter solution = new IslandPerimeter();
 
         int [][] matrix = {
                 {1,0,1,1,1},
@@ -14,8 +15,31 @@ public class IslandPerimeter {
                 {0,0,0,1,1}
         };
 
-        IslandPerimeter solution = new IslandPerimeter();
         Assertions.assertEquals(7, solution.calcMaxIslandPerimeter(matrix));
+
+        int [][]  matrix1 = {
+                {1,1,1,1,1},
+                {1,1,1,1,1},
+                {1,1,1,1,1}
+        };
+
+        Assertions.assertEquals(12, solution.calcMaxIslandPerimeter(matrix1));
+
+        int [][]  matrix2 = {
+                {0,0,1,1,1},
+                {0,1,1,1,1},
+                {1,1,1,1,1}
+        };
+
+        Assertions.assertEquals(10, solution.calcMaxIslandPerimeter(matrix2));
+
+        int [][]  matrix3 = {
+                {1,1,1,1,1},
+                {1,0,1,0,1},
+                {1,1,1,1,1}
+        };
+
+        Assertions.assertEquals(13, solution.calcMaxIslandPerimeter(matrix3));
     }
 
 
