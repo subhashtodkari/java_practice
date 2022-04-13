@@ -167,8 +167,6 @@ public class ColoringABorder_1034 {
     static class Point {
         int x, y;
 
-        Point left, right, top, bottom;
-
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
