@@ -3,7 +3,7 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(generateClassName("127. Word Ladder"));
+        System.out.println(generateClassName("1034. Coloring A Border"));
     }
 
     public static String generateClassName(String str) {
