@@ -3,7 +3,7 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(generateClassName("1034. Coloring A Border"));
+        System.out.println(generateClassName("987. Vertical Order Traversal of a Binary Tree"));
     }
 
     public static String generateClassName(String str) {
