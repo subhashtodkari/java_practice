@@ -3,7 +3,7 @@ package org.subhasht.util;
 public class StringUtil {
 
     public static void main(String[] args) {
-        System.out.println(generateClassName("987. Vertical Order Traversal of a Binary Tree"));
+        System.out.println(generateClassName("1120. Maximum Average Subtree"));
     }
 
     public static String generateClassName(String str) {
