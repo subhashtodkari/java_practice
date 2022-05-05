@@ -47,6 +47,21 @@ public class RemoveDuplicatesFromSortedListII_82 {
     }
 
     public ListNode deleteDuplicates(ListNode head) {
+        return recursive(head, null);
+    }
+
+    public ListNode recursive(ListNode node, ListNode prev) {
+        if(node == null)
+            return null;
+
+        if((prev == null || prev.val != node.val) && (node.next == null || node.next.val != node.val))
+            return new ListNode(node.val, recursive(node.next, node));
+        else
+            return recursive(node.next, node);
+
+    }
+
+    public ListNode deleteDuplicates1(ListNode head) {
         if(head == null || head.next == null)
             return head;
 
