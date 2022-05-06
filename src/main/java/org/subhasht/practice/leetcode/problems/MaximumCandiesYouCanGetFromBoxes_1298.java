@@ -89,21 +89,19 @@ public class MaximumCandiesYouCanGetFromBoxes_1298 {
         }
 
         Set<Integer> availableBoxes = new HashSet<>();
-        Set<Integer> availableKeys = new HashSet<>();
-
 
         while(!q.isEmpty()) {
             int box = q.remove();
             total += candies[box];
             for(int k : keys[box]) {
-                availableKeys.add(k);
+                status[k] = 1;
                 if(availableBoxes.contains(k)) {
                     q.add(k);
                     availableBoxes.remove(k);
                 }
             }
             for(int cb : containedBoxes[box]) {
-                if(status[cb] == 1 || availableKeys.contains(cb))
+                if(status[cb] == 1)
                     q.add(cb);
                 else
                     availableBoxes.add(cb);
