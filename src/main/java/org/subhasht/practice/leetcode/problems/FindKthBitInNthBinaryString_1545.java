@@ -55,10 +55,11 @@ public class FindKthBitInNthBinaryString_1545 {
     public char findKthBit(int n, int k) {
         k--;
         int l = (int) Math.pow(2, n) - 1;
-        return find(k, l, false);
+        //return findRecursively(k, l, false);
+        return findUsingLoop(k, l);
     }
 
-    char find(int k, int l, boolean invert) {
+    char findRecursively(int k, int l, boolean invert) {
         if(k == 0)
             return invert ? ONE : ZERO;
         if(k == l/2 || k == l - 1)
@@ -70,6 +71,21 @@ public class FindKthBitInNthBinaryString_1545 {
         } else {
             l = ((l+1)/2)-1;
         }
-        return find(k, l, invert);
+        return findRecursively(k, l, invert);
+    }
+
+    char findUsingLoop(int k, int l) {
+        boolean invert = false;
+        while(k > 0) {
+            if(k == l/2 || k == l - 1)
+                return invert ? ZERO :ONE;
+            if(k > l/2) {
+                k = l - k - 1;
+                invert = !invert;
+            } else {
+                l = ((l+1)/2)-1;
+            }
+        }
+        return invert ? ONE : ZERO;
     }
 }
