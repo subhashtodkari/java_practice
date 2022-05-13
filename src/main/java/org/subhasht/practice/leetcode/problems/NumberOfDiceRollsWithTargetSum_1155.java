@@ -43,6 +43,8 @@ public class NumberOfDiceRollsWithTargetSum_1155 {
         NumberOfDiceRollsWithTargetSum_1155 solution = new NumberOfDiceRollsWithTargetSum_1155();
         //Assertions.assertEquals(1, solution.numRollsToTarget(1, 6, 3));
         //Assertions.assertEquals(6, solution.numRollsToTarget(2, 6, 7));
+        Assertions.assertEquals(378846878, solution.numRollsToTarget(20, 19, 233));
+        Assertions.assertEquals(6, solution.numRollsToTarget(3, 4, 10));
         Assertions.assertEquals(1, solution.numRollsToTarget(30, 30, 30));
         Assertions.assertEquals(30, solution.numRollsToTarget(30, 30, 31));
         Assertions.assertEquals(222616187, solution.numRollsToTarget(30, 30, 500));
@@ -50,7 +52,34 @@ public class NumberOfDiceRollsWithTargetSum_1155 {
     }
 
     public int numRollsToTarget(int n, int k, int target) {
-        return (int) find(n, k, target) % 1000000007;
+        //return (int) find(n, k, target) % 1000000007;
+        return findUsingDp(n, k, target);
+    }
+
+    int findUsingDp(int n, int k, int target) {
+        long [][] dp = new long [n][target+k];
+        for(int i = k; i < k + Math.min(k, target); i++) {
+            dp[0][i] = 1;
+        }
+        //printDp(dp);
+        for (int i = 1; i < n; i++) {
+            for (int t = k + i; t < target + k; t++) {
+                dp[i][t] = (dp[i][t-1] - dp[i-1][t-k-1] + dp[i-1][t-1]) % 1000000007;
+                if(dp[i][t] < 0)
+                    dp[i][t] += 1000000007;
+                //printDp(dp);
+                if(dp[i][t] == 0)
+                    break;
+            }
+        }
+        return (int) dp[n-1][target+k-1];
+    }
+
+    void printDp(int[][] dp) {
+        for(int [] arr : dp) {
+            System.out.println(Arrays.toString(arr));
+        }
+        System.out.println();
     }
 
     Map<String, Long> cache = new HashMap<>();
@@ -71,7 +100,10 @@ public class NumberOfDiceRollsWithTargetSum_1155 {
             long min = target - max;
             total = max - min + 1;
         } else {
-            for (int i = 1; i <= k; i++) {
+            int max = Math.min(k, target - n + 1);
+            int min = target <= (((n-1) * k) + 1) ? 1 : target - ((n-1) * k);
+
+            for (int i = min; i <= max; i++) {
                 long t = find(n - 1, k, target - i);
                 if (t > 0) {
                     total += t;
