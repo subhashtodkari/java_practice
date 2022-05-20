@@ -57,7 +57,7 @@ public class NetworkDelayTime_743 {
     }
 
     public int networkDelayTime(int[][] times, int n, int k) {
-        Map<Integer, Map<Integer, Integer>> map = buildMap(times);
+        ArrayList<int[]>[] map = buildMap(times, n);
 
         Set<Integer> destinations = new HashSet<>();
         for(int i = 1; i <= n; i++) {
@@ -65,9 +65,9 @@ public class NetworkDelayTime_743 {
         }
         destinations.remove(k);
         PriorityQueue<Tuple> heap = new PriorityQueue<>(Comparator.comparingInt(t -> t.time));
-        if(map.containsKey(k)) {
-            for(Map.Entry<Integer,Integer> e : map.get(k).entrySet()) {
-                heap.add(new Tuple(e.getValue(), e.getKey()));
+        if(map[k] != null) {
+            for(int [] arr : map[k]) {
+                heap.add(new Tuple(arr[2], arr[1]));
             }
         }
         Tuple tp;
@@ -78,10 +78,10 @@ public class NetworkDelayTime_743 {
                 return tp.time;
             }
 
-            if(map.containsKey(tp.dest)) {
-                for(Map.Entry<Integer,Integer> e : map.get(tp.dest).entrySet()) {
-                    if(destinations.contains(e.getKey()))
-                        heap.add(new Tuple(tp.time + e.getValue(), e.getKey()));
+            if(map[tp.dest] != null) {
+                for(int [] arr : map[tp.dest]) {
+                    if(destinations.contains(arr[1]))
+                        heap.add(new Tuple(tp.time + arr[2], arr[1]));
                 }
             }
         }
@@ -97,14 +97,13 @@ public class NetworkDelayTime_743 {
         }
     }
 
-    Map<Integer, Map<Integer, Integer>> buildMap(int [][] times) {
-        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-
-        for(int [] arr : times) {
-            map.putIfAbsent(arr[0], new HashMap<>());
-            map.get(arr[0]).put(arr[1], arr[2]);
+    ArrayList<int[]>[] buildMap(int [][] times, int n) {
+        ArrayList<int[]>[] arr = new ArrayList[n+1];
+        for(int [] ar : times) {
+            if(arr[ar[0]] == null)
+                arr[ar[0]] = new ArrayList();
+            arr[ar[0]].add(ar);
         }
-
-        return map;
+        return arr;
     }
 }
