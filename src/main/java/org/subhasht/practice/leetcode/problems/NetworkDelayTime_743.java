@@ -64,37 +64,30 @@ public class NetworkDelayTime_743 {
             destinations.add(i);
         }
         destinations.remove(k);
-        PriorityQueue<Tuple> heap = new PriorityQueue<>(Comparator.comparingInt(t -> t.time));
+        PriorityQueue<int []> heap = new PriorityQueue<>(Comparator.comparingInt(arr -> arr[2]));
         if(map[k] != null) {
-            for(int [] arr : map[k]) {
-                heap.add(new Tuple(arr[2], arr[1]));
-            }
+            heap.addAll(map[k]);
         }
-        Tuple tp;
+        int [] tp;
         while(!heap.isEmpty()) {
             tp = heap.remove();
-            destinations.remove(tp.dest);
+            if(!destinations.contains(tp[1]))
+                continue;
+            destinations.remove(tp[1]);
             if(destinations.isEmpty()) {
-                return tp.time;
+                return tp[2];
             }
 
-            if(map[tp.dest] != null) {
-                for(int [] arr : map[tp.dest]) {
+            if(map[tp[1]] != null) {
+                for(int [] arr : map[tp[1]]) {
+                    arr[2] += tp[2];
                     if(destinations.contains(arr[1]))
-                        heap.add(new Tuple(tp.time + arr[2], arr[1]));
+                        heap.add(arr);
                 }
             }
         }
 
         return -1;
-    }
-
-    static class Tuple {
-        int time, dest;
-        public Tuple(int t, int d) {
-            time = t;
-            dest = d;
-        }
     }
 
     ArrayList<int[]>[] buildMap(int [][] times, int n) {
