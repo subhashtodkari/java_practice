@@ -63,7 +63,6 @@ public class NetworkDelayTime_743 {
         for(int i = 1; i <= n; i++) {
             destinations.add(i);
         }
-        int timeSpent = 0;
         destinations.remove(k);
         PriorityQueue<Tuple> heap = new PriorityQueue<>(Comparator.comparingInt(t -> t.time));
         if(map.containsKey(k)) {
