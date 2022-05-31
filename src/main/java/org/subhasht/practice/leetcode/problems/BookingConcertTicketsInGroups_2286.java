@@ -1,5 +1,8 @@
 package org.subhasht.practice.leetcode.problems;
 
+import org.junit.jupiter.api.Assertions;
+import org.subhasht.util.ArrayComparator;
+
 import java.util.Arrays;
 
 public class BookingConcertTicketsInGroups_2286 {
@@ -18,7 +21,24 @@ public class BookingConcertTicketsInGroups_2286 {
         System.out.println(Arrays.toString(show.gather(10, 4))); //3 0
         System.out.println(Arrays.toString(show.gather(1, 4))); //1 8
         System.out.println(Arrays.toString(show.gather(2, 2))); //2 7
-        System.out.println(show.scatter(13, 2)); // true
+        System.out.println(show.scatter(13, 2)); // false
+        System.out.println(show.scatter(12, 2)); // false
+        System.out.println(show.scatter(12, 4)); // true
+
+        BookMyShow show2 = new BookMyShow(5, 10);
+        ArrayComparator.compare(show2.gather(8, 2), new int [] {0, 0}, false);
+        ArrayComparator.compare(show2.gather(8, 2), new int [] {1, 0}, false);//1 0
+        ArrayComparator.compare(show2.gather(2, 2), new int [] {0, 8}, false);//0 8
+        ArrayComparator.compare(show2.gather(3, 2), new int [] {2, 0}, false);//2 0
+        ArrayComparator.compare(show2.gather(4, 2), new int [] {2, 3}, false);//2 3
+        ArrayComparator.compare(show2.gather(4, 2), new int [] {}, false);//null
+        ArrayComparator.compare(show2.gather(11, 4), new int [] {}, false);//null
+        ArrayComparator.compare(show2.gather(10, 4), new int [] {3, 0}, false);//3 0
+        ArrayComparator.compare(show2.gather(1, 4), new int [] {1, 8}, false);//1 8
+        ArrayComparator.compare(show2.gather(2, 2), new int [] {2, 7}, false);//2 7
+        Assertions.assertFalse(show2.scatter(13, 2));
+        Assertions.assertFalse(show2.scatter(12, 2));
+        Assertions.assertTrue(show2.scatter(12, 4));
 
     }
 
@@ -35,7 +55,7 @@ public class BookingConcertTicketsInGroups_2286 {
             int [] ans = theatre.bookInTheSameRow(k, 0, maxRow);
             System.out.println();
             System.out.println(theatre);
-            return ans;
+            return ans == null ? new int[] {} : ans;
         }
 
         public boolean scatter(int k, int maxRow) {
@@ -92,18 +112,31 @@ public class BookingConcertTicketsInGroups_2286 {
             return null;
         }
 
+        long getAvailability(int f, int t) {
+            if((from == f && to == t) || from == to)  return capacity - occupied;
+            long leftPossible = 0;
+            long rightPossible = 0;
+            if(left.to >= f)
+                leftPossible = left.getAvailability(Math.max(left.from, f), Math.min(left.to, t));
+            if(right.from <= t)
+                rightPossible = right.getAvailability(Math.max(right.from, f), Math.min(right.to, t));
+            return leftPossible + rightPossible;
+        }
+
         boolean bookAnywhereRow(int seats, int minRowNum, int maxRowNum) {
-            if(minRowNum < from || maxRowNum > to) throw new RuntimeException("OutOfRange request: Range available["+from+", "+to+"], Range requested: ["+minRowNum+", "+maxRowNum+"]");
-            if(seats > capacity - occupied) {
-                System.out.println("Range ["+from+", "+to+"] cannot book " + seats + " seats as availability is only " + (capacity - occupied));
+            if(getAvailability(minRowNum, maxRowNum) < seats)
                 return false;
-            }
+            return bookAnywhereRowInternal(seats, minRowNum, maxRowNum);
+        }
+
+        boolean bookAnywhereRowInternal(long seats, int minRowNum, int maxRowNum) {
+            if(minRowNum < from || maxRowNum > to) throw new RuntimeException("OutOfRange request: Range available["+from+", "+to+"], Range requested: ["+minRowNum+", "+maxRowNum+"]");
             if (from != to && minRowNum <= left.to) {
-                int possible = (int) Math.min(seats, left.capacity - left.occupied);
-                if(possible > 0)
-                    left.bookAnywhereRow(possible, Math.max(minRowNum, left.from), Math.min(left.to, maxRowNum));
-                if(seats > possible) {
-                    right.bookAnywhereRow(seats - possible, Math.max(minRowNum, right.from), Math.min(right.to, maxRowNum));
+                long leftPossible = Math.min(seats, left.capacity - left.occupied);
+                if(leftPossible > 0)
+                    left.bookAnywhereRowInternal(leftPossible, Math.max(minRowNum, left.from), Math.min(left.to, maxRowNum));
+                if(seats > leftPossible) {
+                    right.bookAnywhereRowInternal(seats - leftPossible, Math.max(minRowNum, right.from), Math.min(right.to, maxRowNum));
                 }
             }
             occupied += seats;
