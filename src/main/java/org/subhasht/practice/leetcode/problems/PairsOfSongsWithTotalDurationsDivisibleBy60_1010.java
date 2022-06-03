@@ -17,6 +17,21 @@ public class PairsOfSongsWithTotalDurationsDivisibleBy60_1010 {
         return sol5(time);
     }
 
+    // time complexity: O(n)
+    // space complexity: O(60 + n) = O(n)
+    public int sol6(int[] times) {
+        final int DURATION = 60;
+        int [] map = new int [60];
+        int [] ans = new int [times.length + 1];
+        for(int i = times.length-1; i >= 0; i--) {//O(n)
+            int r = times[i] % DURATION;
+            int reqRem = r == 0 ? 0 : 60 - r;
+            ans[i] = map[reqRem] + ans[i+1];
+            map[r]++;
+        }
+        return ans[0];
+    }
+
     // time complexity: O(n + 31) = O(n)
     // space complexity: O(60) = O(1)
     public int sol5(int[] times) {
