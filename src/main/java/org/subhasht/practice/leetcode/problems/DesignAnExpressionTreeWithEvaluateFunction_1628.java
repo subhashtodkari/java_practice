@@ -56,7 +56,8 @@ public class DesignAnExpressionTreeWithEvaluateFunction_1628 {
         Assertions.assertEquals(-16, node.evaluate());
 
         // % operator not registered yet
-        Assertions.assertThrows(RuntimeException.class, () -> new TreeBuilder().buildTree(new String [] {"30","4","%"}).evaluate());
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> new TreeBuilder().buildTree(new String [] {"30","4","%"}).evaluate());
+        Assertions.assertEquals("Operation '%' is not supported yet", exception.getMessage());
 
         OperatorEvaluatorFactory.register('%', nodes -> {
             assert nodes.length == 2;
