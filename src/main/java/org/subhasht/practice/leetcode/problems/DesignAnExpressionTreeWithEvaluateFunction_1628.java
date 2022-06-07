@@ -54,6 +54,18 @@ public class DesignAnExpressionTreeWithEvaluateFunction_1628 {
         treeBuilder = new TreeBuilder();
         node = treeBuilder.buildTree(new String [] {"4","5","2","7","+","-","*"});
         Assertions.assertEquals(-16, node.evaluate());
+
+        // % operator not registered yet
+        Assertions.assertThrows(RuntimeException.class, () -> new TreeBuilder().buildTree(new String [] {"30","4","%"}).evaluate());
+
+        OperatorEvaluatorFactory.register('%', nodes -> {
+            assert nodes.length == 2;
+            return nodes[0].evaluate() % nodes[1].evaluate();
+        });
+        treeBuilder = new TreeBuilder();
+        node = treeBuilder.buildTree(new String [] {"30","4","%"});
+        Assertions.assertEquals(2, node.evaluate());
+
     }
 
 }
