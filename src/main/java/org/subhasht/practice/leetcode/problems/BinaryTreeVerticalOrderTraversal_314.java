@@ -1,7 +1,8 @@
 package org.subhasht.practice.leetcode.problems;
 
+import org.junit.jupiter.api.Assertions;
+
 import java.util.*;
-import java.util.stream.Collectors;
 
 /*
 Given the root of a binary tree, return the vertical order traversal of its nodes' values. (i.e., from top to bottom, column by column).
@@ -34,50 +35,106 @@ The number of nodes in the tree is in the range [0, 100].
  */
 public class BinaryTreeVerticalOrderTraversal_314 {
 
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        Assertions.assertIterableEquals(
+                List.of(
+                        List.of(4),
+                        List.of(9,5),
+                        List.of(3,0,1),
+                        List.of(8,2),
+                        List.of(7)
+                ),
+                solution.verticalOrder(buildTree(new Integer [] {3,9,8,4,0,1,7,null,null,null,2,5}, 0)));
+
+        Assertions.assertIterableEquals(
+                List.of(
+                        List.of(4),
+                        List.of(9),
+                        List.of(3,0,1),
+                        List.of(8),
+                        List.of(7)
+                ),
+                solution.verticalOrder(buildTree(new Integer [] {3,9,8,4,0,1,7}, 0)));
+
+        Assertions.assertIterableEquals(
+                List.of(
+                        List.of(9),
+                        List.of(3,15),
+                        List.of(20),
+                        List.of(7)
+                ),
+                solution.verticalOrder(buildTree(new Integer [] {3,9,20,null,null,15,7}, 0)));
+    }
+
+
+
+    static TreeNode buildTree(Integer [] arr, int i) {
+        return i >= arr.length || arr[i] == null
+                ? null
+                : new TreeNode(arr[i], buildTree(arr, (i*2) +1), buildTree(arr, (i*2) + 2));
+    }
+
 
     static class Solution {
 
         int minVi = Integer.MAX_VALUE, maxVi = Integer.MIN_VALUE;
 
-        static class Num {
-            int num, vi, lvl;
-            public Num(int n, int v, int l) {
-                num = n;
-                vi = v;
-                lvl = l;
-            }
-        }
-
         public List<List<Integer>> verticalOrder(TreeNode root) {
-            Map<Integer, List<Num>> map = new HashMap<>();
-
-            process(root, 0, 0, map);
-
             List<List<Integer>> ans = new LinkedList<>();
-            for(int i = minVi; i <= maxVi; i++) {
-                List<Num> nums = map.get(i);
-                nums.sort(Comparator.comparingInt(n -> n.lvl));
-                ans.add(nums.stream().map(num -> num.num).collect(Collectors.toList()));
+            if(root == null) return ans;
+
+            Map<Integer, List<Integer>> map = new HashMap<>();
+            List<Integer> list;
+
+            Deque<TreeNode> nodeQ = new LinkedList<>();
+            Deque<Integer> viQ = new LinkedList<>();
+
+            TreeNode node = root;
+            int vi = 0, sz;
+
+            nodeQ.add(node);
+            viQ.add(vi);
+
+            while(!nodeQ.isEmpty()) {
+                sz = nodeQ.size();
+                for(int i = 0; i < sz; i++) {
+                    node = nodeQ.remove();
+                    vi = viQ.remove();
+
+                    if(vi == 0 && map.isEmpty()) {
+                        list = new LinkedList<>();
+                        ans.add(list);
+                        map.put(vi, list);
+                        minVi = vi;
+                        maxVi = vi;
+                    } else if(vi < minVi) {
+                        list = new LinkedList<>();
+                        ans.add(0, list);
+                        map.put(vi, list);
+                        minVi = vi;
+                    } else if(vi > maxVi) {
+                        list = new LinkedList<>();
+                        ans.add(list);
+                        map.put(vi, list);
+                        maxVi = vi;
+                    }
+
+                    map.get(vi).add(node.val);
+
+                    if(node.left != null) {
+                        nodeQ.add(node.left);
+                        viQ.add(vi-1);
+                    }
+
+                    if(node.right != null) {
+                        nodeQ.add(node.right);
+                        viQ.add(vi+1);
+                    }
+                }
             }
 
             return ans;
-        }
-
-        void process(TreeNode node, int vi, int lvl, Map<Integer, List<Num>> map) {
-            if(node == null) return;
-
-            if(node.left != null)
-                process(node.left, vi-1, lvl+1, map);
-
-            minVi = Math.min(minVi, vi);
-            maxVi = Math.max(maxVi, vi);
-
-            map.putIfAbsent(vi, new ArrayList<>());
-            map.get(vi).add(new Num(node.val, vi, lvl) );
-
-            if(node.right != null)
-                process(node.right, vi+1, lvl+1, map);
-
         }
     }
     static class TreeNode {
