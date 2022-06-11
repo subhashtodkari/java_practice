@@ -43,7 +43,31 @@ public class ConstructKPalindromeStrings_1400 {
         Assertions.assertFalse(solution.canConstruct("leetcode", 3));
     }
 
+    //super fast
     static class Solution {
+        public boolean canConstruct(String s, int k) {
+            if(k > s.length()) return false;
+            if(k == s.length()) return true;
+
+            int [] counts = new int [26];
+
+            for(char c : s.toCharArray()) {
+                counts[c - 'a']++;
+            }
+
+            int odds = 0;
+            for(int c : counts) {
+                if(c % 2 == 1) {
+                    odds++;
+                }
+            }
+
+            return odds <= k;
+        }
+    }
+
+    //slower
+    static class Solution1 {
         public boolean canConstruct(String s, int k) {
             if(k > s.length()) return false;
 
