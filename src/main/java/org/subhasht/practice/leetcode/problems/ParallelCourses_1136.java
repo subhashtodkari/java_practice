@@ -54,16 +54,17 @@ public class ParallelCourses_1136 {
         public int minimumSemesters(int n, int[][] relations) {
             int [] pre = new int [n+1];
             Map<Integer, List<Integer>> adj = new HashMap<>();
-            Set<Integer> roots = new LinkedHashSet<>();
-            for(int i = 1; i <= n; i++) {
-                roots.add(i);
-            }
+            Deque<Integer> roots = new LinkedList<>();
 
             for(int [] r : relations) {
                 adj.putIfAbsent(r[0], new LinkedList<>());
                 adj.get(r[0]).add(r[1]);
                 pre[r[1]]++;
-                roots.remove(r[1]);
+            }
+
+            for(int i = 1; i <= n; i++) {
+                if(pre[i] == 0)
+                    roots.add(i);
             }
 
             if(roots.isEmpty()) return -1;
@@ -72,8 +73,7 @@ public class ParallelCourses_1136 {
             while(!roots.isEmpty()) {
                 int sz = roots.size();
                 for(int i = 0; i < sz; i++) {
-                    int completed = roots.iterator().next();
-                    roots.remove(completed);
+                    int completed = roots.remove();
                     if(adj.containsKey(completed)) {
                         for(int successor : adj.get(completed)) {
                             pre[successor]--;
