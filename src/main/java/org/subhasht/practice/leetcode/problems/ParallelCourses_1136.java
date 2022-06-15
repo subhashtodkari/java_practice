@@ -48,8 +48,54 @@ public class ParallelCourses_1136 {
         Assertions.assertEquals(-1, solution.minimumSemesters(2, new int [][] {{1,2}, {2,1}}));
     }
 
-
+    //best from my side
     static class Solution {
+
+        public int minimumSemesters(int n, int[][] relations) {
+            List[] adjList = new List[n];
+            int[] prerequisite = new int[n];
+
+            for (int i = 0; i < n; ++i) {
+                adjList[i] = new ArrayList<Integer>();
+            }
+
+            Deque<Integer> q = new LinkedList<>();
+
+            for (int[] relation : relations) {
+                adjList[relation[0] - 1].add(relation[1] - 1);
+                prerequisite[relation[1] - 1]++;
+            }
+
+            int visited = 0;
+            for (int i = 0; i < n; ++i) {
+                if (prerequisite[i] == 0) {
+                    q.add(i);
+                }
+            }
+
+            int node;
+            int [] sems = new int[n];
+            int max = 0;
+            while(!q.isEmpty()) {
+                node = q.remove();
+                visited++;
+                for(int next : (List<Integer>)adjList[node]) {
+                    prerequisite[next]--;
+                    if(prerequisite[next] == 0) {
+                        q.add(next);
+                        if(sems[node]+1 > sems[next])
+                            sems[next] = sems[node]+1;
+                        if(sems[next] > max)
+                            max = sems[next];
+                    }
+                }
+            }
+
+            return visited == n ? max + 1 : -1;
+        }
+    }
+
+    static class Solution1 {
 
         public int minimumSemesters(int n, int[][] relations) {
             int [] pre = new int [n+1];
