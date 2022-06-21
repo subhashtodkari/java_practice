@@ -78,9 +78,8 @@ public class FurthestBuildingYouCanReach_1642 {
                         maxHeap.add(d);
                     } else if(bricks > 0) {
                         if(!maxHeap.isEmpty() && d > maxHeap.peek()) {
-                            int top = maxHeap.remove();
                             maxHeap.add(d);
-                            d = top;
+                            d = maxHeap.remove();
                         }
                         if(bricks >= d) {
                             bricks -= d;
