@@ -33,12 +33,12 @@ public class SwappingNodesInALinkedList_1721 {
 
             while(trav != null) {
                 if(i == k) {
-                    kFromBeginning = trav;//hold ref to Kth node from begining
+                    kFromBeginning = trav;//hold ref to Kth node from beginning
                     kFromEnd = head;
                 }
                 trav = trav.next;
                 if(i > k)
-                    kFromEnd = kFromEnd.next;//kFronEnd will follow trav with keeping distance of K
+                    kFromEnd = kFromEnd.next;//kFromEnd will follow trav with keeping distance of K
                 i++;
             }
 
