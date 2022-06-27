@@ -45,7 +45,32 @@ public class KillProcess_582 {
         Assertions.assertIterableEquals(List.of(5, 10), solution.killProcess(List.of(1,3,10,5), List.of(3,0,5,3), 5));
     }
 
+    //recursive
     static class Solution {
+        public List<Integer> killProcess(List<Integer> pid, List<Integer> ppid, int kill) {
+            Map<Integer, List<Integer>> adjListMap = new HashMap<>();
+            for(int i = 0; i < pid.size(); i++) {
+                adjListMap.putIfAbsent(ppid.get(i), new ArrayList<>());
+                adjListMap.get(ppid.get(i)).add(pid.get(i));
+            }
+
+            List<Integer> killed = new ArrayList<>();
+            populate(adjListMap, kill, killed);
+            return killed;
+        }
+
+        void populate(Map<Integer, List<Integer>> adjListMap, int kill, List<Integer> killed) {
+            killed.add(kill);
+            if(adjListMap.containsKey(kill)) {
+                for(int child : adjListMap.get(kill)) {
+                    populate(adjListMap, child, killed);
+                }
+            }
+        }
+    }
+
+    //BSF
+    static class Solution1 {
         public List<Integer> killProcess(List<Integer> pid, List<Integer> ppid, int kill) {
             Map<Integer, List<Integer>> adjListMap = new HashMap<>();
             for(int i = 0; i < pid.size(); i++) {
