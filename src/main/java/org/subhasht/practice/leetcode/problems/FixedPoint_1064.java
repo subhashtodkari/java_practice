@@ -42,6 +42,8 @@ public class FixedPoint_1064 {
     }
 
     static class Solution {
+
+        //O(Log N) - binary search
         public int fixedPoint(int[] arr) {
             int l = 0, r = arr.length-1, m, min = arr.length;
             while(l < r) {
